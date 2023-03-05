@@ -1,5 +1,6 @@
 package com.example.recipeapp.activity
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -13,10 +14,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.recipeapp.R
 import com.example.recipeapp.databinding.FoodDetailsLayoutBinding
-import com.example.recipeapp.model.FavouriteData
-import com.example.recipeapp.model.ShoppingItemsData
+import com.example.recipeapp.databinding.SelectDayDialogBinding
+import com.example.recipeapp.model.db.FavouriteData
+import com.example.recipeapp.model.db.ShoppingItemsData
+import com.example.recipeapp.model.db.WeeklyShoppingItemsData
 import com.example.recipeapp.roomdb.dao.FavouriteDAO
 import com.example.recipeapp.roomdb.dao.ShoppingListDAO
+import com.example.recipeapp.roomdb.dao.WeeklyShoppingListDAO
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +42,9 @@ class FoodDetailsActivity : AppCompatActivity() {
     @Inject
     lateinit var shoppingListDAO: ShoppingListDAO
 
+    @Inject
+    lateinit var weeklyShoppingListDAO: WeeklyShoppingListDAO
+
     var id: String? = null
 
     var ingredientsList: String = ""
@@ -49,6 +56,7 @@ class FoodDetailsActivity : AppCompatActivity() {
         id = intent.extras?.getString("id", null)
         inflate.addFav.visibility = GONE
         inflate.addShopping.visibility = GONE
+        inflate.addCalender.visibility = GONE
         val client = OkHttpClient().newBuilder()
             .build()
         if (id != null) {
@@ -65,8 +73,6 @@ class FoodDetailsActivity : AppCompatActivity() {
             Log.d("texts", "onCreate: " + favouriteDAO.getFavouriteCount())
 
             updateFavourites()
-
-
         }
     }
 
@@ -163,6 +169,28 @@ class FoodDetailsActivity : AppCompatActivity() {
                 }
             }
 
+            inflate.addCalender.setOnClickListener {
+                val alertDialog = AlertDialog.Builder(this@FoodDetailsActivity)
+                val inflate1 = SelectDayDialogBinding.inflate(layoutInflater)
+                alertDialog.setView(inflate1.root)
+                var create: AlertDialog? = null
+                inflate1.button.setOnClickListener {
+                    id?.let {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            weeklyShoppingListDAO.insert(
+                                WeeklyShoppingItemsData(
+                                    ingredientsList,
+                                    inflate1.spinner.selectedItem.toString()
+                                )
+                            )
+                        }
+                    }
+                    create?.dismiss()
+                }
+                create = alertDialog.create()
+                create.show()
+            }
+
             Glide.with(inflate.foodImg).load(actualMeal.getString("strMealThumb"))
                 .diskCacheStrategy(
                     DiskCacheStrategy.AUTOMATIC
@@ -187,8 +215,8 @@ class FoodDetailsActivity : AppCompatActivity() {
 
             inflate.instructionsTv.text = actualMeal.getString("strInstructions")
             inflate.addFav.visibility = VISIBLE
-
             inflate.addShopping.visibility = VISIBLE
+            inflate.addCalender.visibility = VISIBLE
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.recipeapp.model
+package com.example.recipeapp.model.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

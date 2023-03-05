@@ -45,6 +45,13 @@
                     android:layout_weight="1"
                     android:tint="@color/purple_200"
                     app:srcCompat="@drawable/baseline_add_shopping_cart_24" />
+
+                <ImageView
+                    android:id="@+id/add_calender"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/baseline_calendar_month_24" />
             </LinearLayout>
 
             <LinearLayout

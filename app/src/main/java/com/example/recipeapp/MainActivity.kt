@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.example.recipeapp.activity.FavoriteFoodsActivity
 import com.example.recipeapp.activity.ShopListActivity
+import com.example.recipeapp.activity.UserProfileActivity
 import com.example.recipeapp.adapter.HomePageFoodAdapter
 import com.example.recipeapp.databinding.ActivityMainBinding
 import com.example.recipeapp.model.Meal
@@ -48,13 +49,16 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ShopListActivity::class.java)
             startActivity(intent)
         }
-        if (BuildConfig.DEBUG) {
-            val intent = Intent(this, ShopListActivity::class.java)
+        inflate.userProfile.setOnClickListener {
+            val intent = Intent(this, UserProfileActivity::class.java)
             startActivity(intent)
-            /*
-                 val intent = Intent(this, FoodDetailsActivity::class.java)
-                 intent.putExtra("id", "52772")
-                 startActivity(intent)*/
+        }
+        if (BuildConfig.DEBUG) {
+            val intent = Intent(this, UserProfileActivity::class.java)
+            startActivity(intent)
+            /*val intent = Intent(this, FoodDetailsActivity::class.java)
+            intent.putExtra("id", "52772")
+            startActivity(intent)*/
         }
     }
 

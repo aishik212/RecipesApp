@@ -8,9 +8,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.recipeapp.R
-import com.example.recipeapp.model.ShoppingItemsData
+import com.example.recipeapp.model.db.ShoppingItemsData
 
 class ShoppingListAdapter(
     private val meals: List<ShoppingItemsData>,

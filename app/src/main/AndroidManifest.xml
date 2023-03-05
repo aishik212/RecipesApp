@@ -26,6 +26,7 @@
         <activity android:name="com.example.recipeapp.activity.FoodDetailsActivity" />
         <activity android:name="com.example.recipeapp.activity.FavoriteFoodsActivity" />
         <activity android:name="com.example.recipeapp.activity.ShopListActivity" />
+        <activity android:name="com.example.recipeapp.activity.UserProfileActivity" />
     </application>
 
 </manifest>

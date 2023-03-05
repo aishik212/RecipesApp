@@ -1,6 +1,6 @@
 package com.example.recipeapp.roomdb.repository
 
-import com.example.recipeapp.model.FavouriteData
+import com.example.recipeapp.model.db.FavouriteData
 import com.example.recipeapp.roomdb.dao.FavouriteDAO
 import javax.inject.Inject
 
