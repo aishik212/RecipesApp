@@ -3,6 +3,7 @@ package com.example.recipeapp.roomdb
 import android.content.Context
 import androidx.room.Room
 import com.example.recipeapp.roomdb.dao.FavouriteDAO
+import com.example.recipeapp.roomdb.dao.ShoppingListDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,8 +15,13 @@ import javax.inject.Singleton
 @Module
 class DatabaseModule {
     @Provides
-    fun provideChannelDao(appDatabase: AppDatabase): FavouriteDAO {
+    fun provideFavouriteDao(appDatabase: AppDatabase): FavouriteDAO {
         return appDatabase.favouriteDAO()
+    }
+
+    @Provides
+    fun provideShoppingListDao(appDatabase: AppDatabase): ShoppingListDAO {
+        return appDatabase.shoppingListDAO()
     }
 
     @Provides

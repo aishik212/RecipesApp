@@ -3,14 +3,20 @@ package com.example.recipeapp.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.recipeapp.R
 import com.example.recipeapp.databinding.FoodDetailsLayoutBinding
-import com.example.recipeapp.roomdb.FavouriteData
+import com.example.recipeapp.model.FavouriteData
+import com.example.recipeapp.model.ShoppingItemsData
 import com.example.recipeapp.roomdb.dao.FavouriteDAO
+import com.example.recipeapp.roomdb.dao.ShoppingListDAO
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,13 +35,20 @@ class FoodDetailsActivity : AppCompatActivity() {
     @Inject
     lateinit var favouriteDAO: FavouriteDAO
 
+    @Inject
+    lateinit var shoppingListDAO: ShoppingListDAO
+
     var id: String? = null
+
+    var ingredientsList: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inflate = FoodDetailsLayoutBinding.inflate(layoutInflater)
         setContentView(inflate.root)
         id = intent.extras?.getString("id", null)
+        inflate.addFav.visibility = GONE
+        inflate.addShopping.visibility = GONE
         val client = OkHttpClient().newBuilder()
             .build()
         if (id != null) {
@@ -60,7 +73,7 @@ class FoodDetailsActivity : AppCompatActivity() {
     private fun updateFavourites() {
         CoroutineScope(Dispatchers.IO).launch {
             if (id != null) {
-                if (favouriteDAO.getisInFavourite(id) == 0) {
+                if (favouriteDAO.exists(id) == 0) {
                     inflate.addFav.setImageDrawable(
                         ContextCompat.getDrawable(
                             applicationContext,
@@ -113,23 +126,50 @@ class FoodDetailsActivity : AppCompatActivity() {
 
             inflate.addFav.setOnClickListener {
                 CoroutineScope(Dispatchers.IO).launch {
-                    if (favouriteDAO.getisInFavourite(id) == 0) {
-                        favouriteDAO.insertFavourite(
+                    if (favouriteDAO.exists(id) == 0) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            Toast.makeText(applicationContext, "Added", Toast.LENGTH_SHORT).show()
+                        }
+                        favouriteDAO.insert(
                             FavouriteData(
                                 actualMeal.getString("idMeal").toLong(),
                                 actualMeal.toString()
                             )
                         )
                     } else {
-                        favouriteDAO.deleteFavourite(id)
+                        favouriteDAO.delete(id)
+                    }
+                    updateFavourites()
+                }
+            }
+            inflate.addShopping.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (shoppingListDAO.exists(id) == 0) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            Toast.makeText(applicationContext, "Added", Toast.LENGTH_SHORT).show()
+                        }
+                        shoppingListDAO.insert(
+                            ShoppingItemsData(
+                                actualMeal.getString("idMeal").toLong(),
+                                ingredientsList
+                            )
+                        )
+                    } else {
+                        id?.let {
+                            shoppingListDAO.delete(it.toLong())
+                        }
                     }
                     updateFavourites()
                 }
             }
 
             Glide.with(inflate.foodImg).load(actualMeal.getString("strMealThumb"))
+                .diskCacheStrategy(
+                    DiskCacheStrategy.AUTOMATIC
+                )
                 .into(inflate.foodImg)
             var key = 1
+            ingredientsList = actualMeal.get("strMeal").toString() + "\n"
             actualMeal.keys().forEach {
                 if (it.startsWith("strIngredient")) {
                     val replace = it.replace("strIngredient", "strMeasure")
@@ -137,6 +177,8 @@ class FoodDetailsActivity : AppCompatActivity() {
                     if (!(get.equals("null") || get.equals("") || get == null)) {
                         val textView = TextView(this@FoodDetailsActivity)
                         textView.text = ("$key) " + get + " " + actualMeal.get(replace) + "\n")
+                        ingredientsList += "$key) " + get + " " + actualMeal.get(replace) + "\n"
+                        key++
                         textView.setTextColor(Color.BLACK)
                         inflate.ingredientsLl.addView(textView)
                     }
@@ -144,6 +186,9 @@ class FoodDetailsActivity : AppCompatActivity() {
             }
 
             inflate.instructionsTv.text = actualMeal.getString("strInstructions")
+            inflate.addFav.visibility = VISIBLE
+
+            inflate.addShopping.visibility = VISIBLE
         }
     }
 

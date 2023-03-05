@@ -24,6 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.recipeapp.activity.FoodDetailsActivity" />
+        <activity android:name="com.example.recipeapp.activity.FavoriteFoodsActivity" />
+        <activity android:name="com.example.recipeapp.activity.ShopListActivity" />
     </application>
 
 </manifest>

@@ -6,7 +6,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
-import com.example.recipeapp.activity.FoodDetailsActivity
+import com.example.recipeapp.activity.FavoriteFoodsActivity
+import com.example.recipeapp.activity.ShopListActivity
 import com.example.recipeapp.adapter.HomePageFoodAdapter
 import com.example.recipeapp.databinding.ActivityMainBinding
 import com.example.recipeapp.model.Meal
@@ -39,10 +40,21 @@ class MainActivity : AppCompatActivity() {
             searchMeal(it.toString())
             Log.d("texts", "onCreate: " + it.toString())
         }
-        if (BuildConfig.DEBUG) {
-            val intent = Intent(this, FoodDetailsActivity::class.java)
-            intent.putExtra("id", "52772")
+        inflate.floatingActionButton.setOnClickListener {
+            val intent = Intent(this, FavoriteFoodsActivity::class.java)
             startActivity(intent)
+        }
+        inflate.shopListBtn.setOnClickListener {
+            val intent = Intent(this, ShopListActivity::class.java)
+            startActivity(intent)
+        }
+        if (BuildConfig.DEBUG) {
+            val intent = Intent(this, ShopListActivity::class.java)
+            startActivity(intent)
+            /*
+                 val intent = Intent(this, FoodDetailsActivity::class.java)
+                 intent.putExtra("id", "52772")
+                 startActivity(intent)*/
         }
     }
 

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.recipeapp.roomdb.FavouriteData
+import com.example.recipeapp.model.FavouriteData
 
 @Dao
 interface FavouriteDAO {
@@ -16,13 +16,13 @@ interface FavouriteDAO {
     fun getFavouriteCount(): Int
 
     @Query("SELECT COUNT(*) FROM favouriteData where id = :idofRecipe")
-    fun getisInFavourite(idofRecipe: String?): Int
+    fun exists(idofRecipe: String?): Int
 
 
     @Query("DELETE FROM favouriteData where id = :idofRecipe")
-    fun deleteFavourite(idofRecipe: String?): Int
+    fun delete(idofRecipe: String?): Int
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavourite(recipeData: FavouriteData)
+    suspend fun insert(recipeData: FavouriteData)
 }
