@@ -84,6 +84,7 @@ class ShopListActivity : AppCompatActivity() {
     private fun onClickListener(l: Long, view: View?) {
         CoroutineScope(Dispatchers.IO).launch {
             shoppingListDAO.delete(l)
+            weeklyShoppingListDAO.delete(l)
             updateList()
             CoroutineScope(Dispatchers.Main).launch {
                 Toast.makeText(applicationContext, "Deleted", Toast.LENGTH_SHORT).show()

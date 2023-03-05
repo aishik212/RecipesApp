@@ -54,8 +54,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         if (BuildConfig.DEBUG) {
-            val intent = Intent(this, UserProfileActivity::class.java)
-            startActivity(intent)
+            /* val intent = Intent(this, UserProfileActivity::class.java)
+             startActivity(intent)*/
             /*val intent = Intent(this, FoodDetailsActivity::class.java)
             intent.putExtra("id", "52772")
             startActivity(intent)*/
